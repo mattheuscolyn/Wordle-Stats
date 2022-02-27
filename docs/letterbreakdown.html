@@ -43,23 +43,27 @@
     </nav>
 
     <div class="home-content">
-      <div>
-        Wordle is a word game in which you have six tries to guess a five letter word. 
-        Below is a breakdown of the most common letters in the valid guesses for the game.
+      <div class="explanation">
+        <p>Wordle is a word game in which you have six tries to guess a five letter word. 
+          Below is a breakdown of the most common letters in the valid guesses for the game.
+        </p>
       </div>
       <div>
-        <select name="lettercounttype" id="lettercounttype" onchange=drawGraph()>
-          <option value="totalcount">totalcount</option>
-          <option value="letter1count">letter1count</option>
-          <option value="letter2count">letter2count</option>
-          <option value="letter3count">letter3count</option>
-          <option value="letter4count">letter4count</option>
-          <option value="letter5count">letter5count</option>
+        <select name="lettercounttype" id="lettercounttype" style="margin-left: 50px;" onchange=drawGraph()>
+          <option value="totalcount">Total</option>
+          <option value="letter1count">Letter 1</option>
+          <option value="letter2count">Letter 2</option>
+          <option value="letter3count">Letter 3</option>
+          <option value="letter4count">Letter 4</option>
+          <option value="letter5count">Letter 5</option>
         </select>
       </div>
       <div class="lettercountgraph">
-        <svg width="1600" height="700"></svg>
-        <script src="script.js">drawBarGraph()</script>
+        <svg width="1000" height="500"></svg>
+        <script src="script.js"></script>
+        <script>
+        drawGraph()
+        </script>
         </div>
     </div>
   </section>
