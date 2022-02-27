@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <script src="https://d3js.org/d3.v7.min.js"></script>
+   </head>
+<body>
+  <div class="sidebar">
+    <div class="logo-details">
+      <i class='bx bxl-c-plus-plus'></i>
+      <span class="logo_name">Wordle Stats</span>
+    </div>
+      <ul class="nav-links">
+        <li>
+          <a href="#">
+            <i class='bx bx-grid-alt' ></i>
+            <span class="links_name">Letter Breakdown</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="active">
+            <i class='bx bx-box' ></i>
+            <span class="links_name">Difficulty</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class='bx bx-list-ul' ></i>
+            <span class="links_name">Word checker</span>
+          </a>
+        </li>
+      </ul>
+  </div>
+  <section class="home-section">
+    <nav>
+      <div class="sidebar-button">
+        <i class='bx bx-menu sidebarBtn'></i>
+        <span class="dashboard">Difficulty graph</span>
+      </div>
+    </nav>
+
+    <div class="home-content">
+      <div class="explanation">
+        <p>Below is a graph of the relative difficulty of every Wordle answer since its inception last March.
+            Difficulty is ranked based on the frequency of its letter in its relative position. 
+            A score of 1.0 would indicate each letter being the most common of its position and a score of 0 would indicate each letter being the least common of its position.
+        </p>     
+      </div>
+      <div class="difficultyplot">
+        <div class="tooltip" style="margin-left: 50px;">
+            <p style="font-size: 10pt; opacity: 0%;">Place<br>Holder</p>
+        </div>
+        <script>
+            var margin = {top: 20, right: 20, bottom: 30, left: 50},
+                width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+ 
+            var parseTime = d3.timeParse("%d-%b-%y");
+            var formatTime = d3.timeFormat("%B %e, %Y");
+
+            var x = d3.scaleTime().range([0, width]);
+            var y = d3.scaleLinear().range([height, 0]);
+
+            var valueline = d3.line()
+                .x(function(d) { return x(d.date); })
+                .y(function(d) { return y(d.raritypercentile); });
+            
+            var svg = d3.select("div.difficultyplot").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            
+            d3.csv("answers.csv").then(function(data) {
+            
+              data.forEach(function(d) {
+                  d.date = parseTime(d.date);
+                  d.raritypercentile = +d.raritypercentile;
+              });
+            
+              x.domain(d3.extent(data, function(d) { return d.date; }));
+              y.domain([0, d3.max(data, function(d) { return d.raritypercentile; })]);
+
+              svg.selectAll("dot")
+                 .data(data)
+               .enter().append("circle")
+                 .attr("r", 5)
+                 .attr("cx", function(d) { return x(d.date); })
+                 .attr("cy", function(d) { return y(d.raritypercentile); })
+                 .style('fill', '#a6a6f7')
+                 .on("mouseover", function(event,d) {
+                   d3.select(this)
+                     .style('fill', '#551a8b')
+                     .attr("r", 7)
+                   d3.select('div.tooltip')
+                     .transition()
+                     .duration(200)
+                     .style("opacity", .9);
+                   d3.select('div.tooltip')
+                     .html(formatTime(d.date) + "<br/>" + d.raritypercentile)
+                     .style("font-size", '10pt');
+                   })
+                 .on("mouseout", function(d) {
+                   d3.select(this)
+                     .style('fill', '#a6a6f7')
+                     .attr("r", 5)
+                   d3.select('div.tooltip')
+                     .transition()
+                     .duration(500)
+                     .style("opacity", 0);
+                   });
+            
+              svg.append("g")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(d3.axisBottom(x));
+            
+              svg.append("g")
+                  .call(d3.axisLeft(y));
+            });
+        </script>
+        </div>
+    </div>
+  </section>
+
+  <script>
+    let sidebar = document.querySelector(".sidebar");
+    let sidebarBtn = document.querySelector(".sidebarBtn");
+    sidebarBtn.onclick = function() {
+      sidebar.classList.toggle("active");
+      if(sidebar.classList.contains("active")){
+        sidebarBtn.classList.replace("bx-menu" ,"bx-menu-alt-right");
+      } else
+        sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+    }
+  </script>
+
+</body>
+</html>
