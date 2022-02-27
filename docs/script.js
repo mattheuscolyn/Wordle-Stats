@@ -50,6 +50,27 @@ function drawGraph()  {
         .attr("y", function(d) { return yScale(0); })
         .attr("width", xScale.bandwidth())
         .attr("height", function(d) { return height - yScale(0); })
+        .on("mouseover", function(event,d) {
+            d3.select(this)
+              .style('fill', '#551a8b')
+              .attr("r", 7)
+            d3.select('div.tooltip')
+              .transition()
+              .duration(200)
+              .style("opacity", .9);
+            d3.select('div.tooltip')
+              .html(d.letter.toUpperCase() + " appears " + d[yvariable] + " times.")
+              .style("font-size", '10pt');
+            })
+        .on("mouseout", function(d) {
+            d3.select(this)
+              .style('fill', '#a6a6f7')
+              .attr("r", 5)
+            d3.select('div.tooltip')
+              .transition()
+              .duration(500)
+              .style("opacity", 0);
+            });
         
         g.selectAll("rect")
         .transition()
