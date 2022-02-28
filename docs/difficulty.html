@@ -100,7 +100,7 @@
                      .duration(200)
                      .style("opacity", .9);
                    d3.select('div.tooltip')
-                     .html(formatTime(d.date) + "<br/>" + d.raritypercentile)
+                     .html(formatTime(d.date) + "<br/>" + d.word + ', ' + d.raritypercentile)
                      .style("font-size", '10pt');
                    })
                  .on("mouseout", function(d) {
