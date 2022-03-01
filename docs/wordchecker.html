@@ -47,7 +47,19 @@
         <p>test
         </p>     
       </div>
-      <div class="wordchecker"></div>
+      <div class="wordchecker">
+        <form action="#" autocomplete="off">
+          <div style="margin-left: 50px;">
+            <input id="userinput" type="text" value="words" />
+            <br>
+            <br>
+            <button onclick="calculate()">Calculate</button>
+            <script src="script.js"></script>
+            <br><p id="error"></p><br>
+            <input class="wordcheckerresult" type="text" value="tests" style="opacity: 0"/>
+          </div>
+        </form>
+      </div>
     </div>
   </section>
 

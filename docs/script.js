@@ -80,3 +80,53 @@ function drawGraph()  {
         .delay(function(d,i){console.log(i) ; return(i*100)})
     });
 }
+
+function calculate() {
+  var userword = document.getElementById("userinput").value;
+  var userwordarray = [userword.charAt(0), 
+                      userword.charAt(1), 
+                      userword.charAt(2),
+                      userword.charAt(3),
+                      userword.charAt(4)]
+  var myCSV = d3.csv("validguesses.csv");
+
+  if (userword.length == 5) {
+    myCSV.then(function(data) {
+      var word = [],
+        totalrank = [];
+      data.map(function(d) {
+          word.push(d.word);
+          totalrank.push(d.totalrank);
+      });
+      var possibleWordArray = []
+      var scoreArray = []
+      console.log(userwordarray)
+      for (let i = 0; i < word.length; i++) {
+        var iterator = 0
+        for (let j = 0; j < 5; j++) {
+          if (userwordarray.includes(word[i].charAt(j))) {
+            //pass
+          } else {
+            iterator += 1
+          }
+        }
+        if (iterator == 5) {
+          possibleWordArray.push(word[i])
+          scoreArray.push(totalrank[i])
+        }
+      }
+      var minscore = Math.min( ...scoreArray)
+      var minscoreindex = scoreArray.indexOf(minscore.toString())
+      var minscoreword = possibleWordArray[minscoreindex]
+      d3.select("input.wordcheckerresult")
+        .attr("value", minscoreword)
+        .transition()
+        .duration(500)
+        .style("opacity", .9)
+    })
+
+    document.getElementById('error').innerHTML = ''
+  } else {
+    document.getElementById('error').innerHTML = 'Please enter a five letter word'
+  }
+}

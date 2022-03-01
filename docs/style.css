@@ -414,3 +414,25 @@ nav .profile-details i{
     display: none;
   }
 }
+
+form > div {
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+input[type=text] {
+  border: 1px solid #ccc;
+  background: linear-gradient(to left, #ccc 1px, transparent 0);
+  background-size: 150px 1px;
+  width: 744px;
+  height: 200px;
+  font: 200px monaco, monospace; 
+  letter-spacing: 38px;
+  text-indent: 23px;
+  text-transform: uppercase;
+}
+
+p.wordcheckerresult {
+  font: 200px monaco, monospace; 
+  letter-spacing: 38px;
+}
