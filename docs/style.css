@@ -431,8 +431,3 @@ input[type=text] {
   text-indent: 23px;
   text-transform: uppercase;
 }
-
-p.wordcheckerresult {
-  font: 200px monaco, monospace; 
-  letter-spacing: 38px;
-}
