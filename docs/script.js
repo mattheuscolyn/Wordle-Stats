@@ -1,7 +1,88 @@
-function drawGraph()  {
-    var svg = d3.select("svg");
-    svg.selectAll("*").remove();
+function drawPlot() {
+  var margin = {top: 20, right: 20, bottom: 30, left: 50},
+                width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+ 
+  var parseTime = d3.timeParse("%d-%b-%y");
+  var formatTime = d3.timeFormat("%B %e, %Y");
 
+  var x = d3.scaleTime().range([0, width]);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  var valueline = d3.line()
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.raritypercentile); });
+
+  d3.select("svg").selectAll('*').remove()
+
+  var svg = d3.select("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                
+  var xvar = 'placeholder'
+  var raritytype = document.getElementById('raritytype').value
+  if (raritytype == 'summative') {
+    xvar = 'summativeraritypercentile'
+  } else {
+    xvar = 'positionalraritypercentile'
+  }
+  console.log(xvar)
+
+  d3.csv("answers.csv").then(function(data) {
+    data.forEach(function(d) {
+        d.date = parseTime(d.date);
+        d[xvar] = +d[xvar];
+    });
+
+    console.log(data.date)
+  
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return d[xvar]; })]);
+
+    svg.selectAll("dot")
+      .data(data)
+      .enter().append("circle")
+      .attr("r", 5)
+      //.transition()
+      //.delay(function(d,i){return(i*3)})
+      //.duration(2000)
+      .attr("cx", function(d) { return x(d.date); })
+      .attr("cy", function(d) { return y(d[xvar]); })
+      .style('fill', '#a6a6f7')
+      .on("mouseover", function(event,d) {
+        d3.select(this)
+          .style('fill', '#551a8b')
+          .attr("r", 7)
+        d3.select('div.tooltip')
+          .transition()
+          .duration(200)
+          .style("opacity", .9);
+        d3.select('div.tooltip')
+          .html(formatTime(d.date) + "<br/>" + d.word + ', ' + d[xvar])
+          .style("font-size", '10pt');
+        })
+      .on("mouseout", function(d) {
+        d3.select(this)
+          .style('fill', '#a6a6f7')
+          .attr("r", 5)
+        d3.select('div.tooltip')
+          .transition()
+          .duration(500)
+          .style("opacity", 0);
+        });
+  
+    svg.append("g")
+       .attr("transform", "translate(0," + height + ")")
+       .call(d3.axisBottom(x));
+  
+    svg.append("g")
+       .call(d3.axisLeft(y));
+  });
+}
+
+function drawGraph()  {
     var selectoption = document.getElementById('lettercounttype');
     var yvariable = selectoption.value;
 
@@ -9,6 +90,8 @@ function drawGraph()  {
         margin = 200,
         width = svg.attr("width") - margin,
         height = svg.attr("height") - margin;
+    
+    svg.selectAll("*").remove()
 
 
     var xScale = d3.scaleBand().range ([0, width]).padding(0.4),
@@ -96,7 +179,7 @@ function calculate() {
         totalrank = [];
       data.map(function(d) {
           word.push(d.word);
-          totalrank.push(d.totalrank);
+          totalrank.push(d.positionalrarityscore);
       });
       var possibleWordArray = []
       var scoreArray = []
