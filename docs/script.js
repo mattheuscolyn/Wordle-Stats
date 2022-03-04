@@ -41,17 +41,22 @@ function drawPlot() {
     x.domain(d3.extent(data, function(d) { return d.date; }));
     y.domain([0, d3.max(data, function(d) { return d[xvar]; })]);
 
-    svg.selectAll("dot")
+    var dots = svg.selectAll("dot")
       .data(data)
       .enter().append("circle")
       .attr("r", 5)
-      //.transition()
-      //.delay(function(d,i){return(i*3)})
-      //.duration(2000)
+      .style('fill', '#a6a6f7')
+      .style('opacity', 0)
+
+    svg.selectAll("circle")
+      .transition()
       .attr("cx", function(d) { return x(d.date); })
       .attr("cy", function(d) { return y(d[xvar]); })
-      .style('fill', '#a6a6f7')
-      .on("mouseover", function(event,d) {
+      .delay(function(d,i){return(i*3)})
+      .duration(2000)
+      .style('opacity', 1)
+    
+    dots.on("mouseover", function(event,d) {
         d3.select(this)
           .style('fill', '#551a8b')
           .attr("r", 7)
